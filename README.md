@@ -1,6 +1,9 @@
 # TodoList
-в репозитории лежат 2 проекта.
+Традиционный ToDo List с хранением данных в СУБД SQLite.
 
-Один сделан с обращением к [БД SQLite](https://dmitryweiner.github.io/android-lectures/SQLite.html) напрямую.
-
-Другой использует [Room](https://dmitryweiner.github.io/android-lectures/Room.html) с той же функциональностью.
+* С использованием SQLiteOpenHelper:
+  * [Код](https://github.com/dmitryweiner/kotlin-sqlite-todolist/tree/master/WithSQLite).
+  * [Презентация](https://dmitryweiner.github.io/android-lectures/SQLite.html).
+* С использованием библиотеки Room:
+  * [Код](https://github.com/dmitryweiner/kotlin-sqlite-todolist/tree/master/WithRoom).
+  * [Презентация](https://dmitryweiner.github.io/android-lectures/Room.html).
