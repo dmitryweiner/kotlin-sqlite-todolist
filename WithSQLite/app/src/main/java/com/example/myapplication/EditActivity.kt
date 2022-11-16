@@ -19,9 +19,10 @@ import androidx.core.graphics.ColorUtils
 import androidx.vectordrawable.graphics.drawable.ArgbEvaluator
 
 class EditActivity : AppCompatActivity() {
-    var id = 0
+
     lateinit var backgroundLayout: ConstraintLayout
     lateinit var windowLayout: ConstraintLayout
+    private val dbHelper = DBHelper(this)
 
     companion object {
         const val RESULT_KEY = "RESULT_KEY"
@@ -34,15 +35,17 @@ class EditActivity : AppCompatActivity() {
         backgroundLayout = findViewById(R.id.background)
         windowLayout = findViewById(R.id.window)
 
-        val itemText = intent.getStringExtra(MainActivity.ITEM_KEY)
-        id = intent.getIntExtra(MainActivity.ITEM_ID_KEY, 0)
+        val id = intent.getLongExtra(MainActivity.ITEM_ID_KEY, 0)
+        val task = dbHelper.getById(id)
         val editText = findViewById<EditText>(R.id.editTextTextMultiLine)
-        editText.setText(itemText)
+        editText.setText(task?.title)
 
         val buttonSave = findViewById<Button>(R.id.buttonSave)
         buttonSave.setOnClickListener {
+            val newTitle = editText.text.toString()
+            dbHelper.updateTask(id, newTitle)
             val returnIntent = Intent()
-            returnIntent.putExtra(RESULT_KEY, editText.text.toString())
+            returnIntent.putExtra(RESULT_KEY, newTitle)
             returnIntent.putExtra(MainActivity.ITEM_ID_KEY, id)
             setResult(Activity.RESULT_OK, returnIntent)
             finish()

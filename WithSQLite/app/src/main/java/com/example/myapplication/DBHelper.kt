@@ -55,6 +55,25 @@ class DBHelper(context: Context?) :
         return result
     }
 
+    fun getById(id: Long): Task? {
+        var result: Task? = null
+        val database = this.writableDatabase
+        val cursor: Cursor = database.query(
+            TABLE_NAME, null, "$KEY_ID = ?", arrayOf(id.toString()),
+            null, null, null
+        )
+        if (cursor.moveToFirst()) {
+            val idIndex: Int = cursor.getColumnIndex(KEY_ID)
+            val titleIndex: Int = cursor.getColumnIndex(KEY_TITLE)
+            result = Task(
+                cursor.getLong(idIndex),
+                cursor.getString(titleIndex),
+            )
+        }
+        cursor.close()
+        return result
+    }
+
     fun addTask(title: String): Long {
         val database = this.writableDatabase
         val contentValues = ContentValues()

@@ -17,7 +17,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val REQUEST_CODE = 1
-        const val ITEM_KEY = "ITEM_KEY"
         const val ITEM_ID_KEY = "ITEM_ID_KEY"
     }
 
@@ -30,8 +29,7 @@ class MainActivity : AppCompatActivity() {
         adapter.onItemClick = {
             // open EditActivity
             val intent = Intent(this, EditActivity::class.java)
-            intent.putExtra(ITEM_KEY, list.get(it).title)
-            intent.putExtra(ITEM_ID_KEY, it)
+            intent.putExtra(ITEM_ID_KEY, list[it].id)
             startActivityForResult(intent, REQUEST_CODE)
         }
 
@@ -57,15 +55,14 @@ class MainActivity : AppCompatActivity() {
 
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val result = data?.getStringExtra(EditActivity.RESULT_KEY)
-            val id = data?.getIntExtra(ITEM_ID_KEY, 0)
+            val id = data?.getLongExtra(ITEM_ID_KEY, 0)
 
             if (id != null && result != null) {
                 // change list item
-                list[id].title = result
+                val index = list.indexOfFirst { it.id == id }
+                list[index].title = result
                 // redraw list
-                adapter.notifyItemChanged(id)
-                // update DB
-                dbHelper.updateTask(list[id].id, result)
+                adapter.notifyItemChanged(index)
             }
         }
     }
