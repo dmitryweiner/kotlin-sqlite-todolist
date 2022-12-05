@@ -1,14 +1,15 @@
 package com.example.myapplication
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
 interface TodoDao {
    @get:Query("SELECT * FROM todos")
-   val all: List<TodoEntity>
+   val all: LiveData<List<TodoEntity>>
 
    @Query("SELECT * FROM todos WHERE id = :id")
-   fun getById(id: Long): TodoEntity
+   fun getById(id: Long): LiveData<TodoEntity>
 
    @Insert
    fun insert(todo: TodoEntity): Long

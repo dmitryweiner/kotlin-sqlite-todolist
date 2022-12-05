@@ -14,18 +14,22 @@ import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
 import android.widget.Button
 import android.widget.EditText
+import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.ColorUtils
+import androidx.lifecycle.Observer
 import androidx.vectordrawable.graphics.drawable.ArgbEvaluator
+import kotlin.concurrent.thread
 
 class EditActivity : AppCompatActivity() {
-    var id = 0
     lateinit var backgroundLayout: ConstraintLayout
     lateinit var windowLayout: ConstraintLayout
 
     companion object {
         const val RESULT_KEY = "RESULT_KEY"
     }
+
+    val viewModel: EditViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,17 +38,19 @@ class EditActivity : AppCompatActivity() {
         backgroundLayout = findViewById(R.id.background)
         windowLayout = findViewById(R.id.window)
 
-        val itemText = intent.getStringExtra(MainActivity.ITEM_KEY)
-        id = intent.getIntExtra(MainActivity.ITEM_ID_KEY, 0)
+        val id = intent.getLongExtra(MainActivity.ITEM_ID_KEY, 0)
+        viewModel.loadTodo(id)
         val editText = findViewById<EditText>(R.id.editTextTextMultiLine)
-        editText.setText(itemText)
+
+        viewModel.todo.observe(this, Observer {
+            editText.setText(it.title)
+        })
 
         val buttonSave = findViewById<Button>(R.id.buttonSave)
         buttonSave.setOnClickListener {
-            val returnIntent = Intent()
-            returnIntent.putExtra(RESULT_KEY, editText.text.toString())
-            returnIntent.putExtra(MainActivity.ITEM_ID_KEY, id)
-            setResult(Activity.RESULT_OK, returnIntent)
+            thread {
+                viewModel.saveTodo(editText.text.toString())
+            }
             finish()
         }
 

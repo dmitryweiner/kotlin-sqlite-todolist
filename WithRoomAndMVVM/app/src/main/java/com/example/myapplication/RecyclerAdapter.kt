@@ -7,20 +7,25 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class RecyclerAdapter(
-    private val list: List<TodoEntity>
-) : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
-    lateinit var onItemClick: (id: Int) -> Unit
+class RecyclerAdapter() : RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
+    private val list: MutableList<TodoEntity> = mutableListOf()
+    lateinit var onItemClick: (id: Long) -> Unit
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.list_item, parent, false)
         return ViewHolder(itemView)
     }
 
+    fun updateList(newList: List<TodoEntity>) {
+        list.clear()
+        list.addAll(newList)
+        this.notifyDataSetChanged()
+    }
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.textView.text = list[position].title
         holder.buttonEdit.setOnClickListener {
-            onItemClick(holder.adapterPosition)
+            list[holder.adapterPosition].id?.let { it1 -> onItemClick(it1) }
         }
     }
 
